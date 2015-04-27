@@ -1,5 +1,8 @@
 // noise.c
 
+#include <stdlib.h>
+#include <math.h>
+
 #define internal static
 #define global static
 #define local static
@@ -120,4 +123,40 @@ float perlin(float x, float y, float z) {
   float nxyz = mix(nxy0, nxy1, w);
 
   return nxyz;
+}
+
+internal float random_uniform(void) {
+  return (float)(arc4random_uniform(UINT16_MAX)) / (float)UINT16_MAX;
+}
+
+float gaussian(float mean, float variance) {
+  const int kN = 20;
+
+  float x = 0.0f;
+  for (int i = 0, len = kN; i < len; ++i) {
+    x += random_uniform();
+  }
+
+  x = x - ((float)kN / 2.0f);
+  x = x * sqrtf(12.0f / (float)kN);
+  
+  return mean + sqrtf(variance) * x;
+}
+
+float brownian(float amplitude, float frequency) {
+  local float current_brown;
+  
+  float brown = 0.0f;
+  float amp = amplitude;
+  float freq = frequency * 0.0625;
+  float lacunarity = 2.0f;
+  for (int i = 0, len = 16; i < len; ++i) {
+    brown += gaussian(0.0f, freq) * amp;
+    freq *= lacunarity;
+    amp *= amplitude;
+  }
+
+  current_brown += brown;
+  current_brown *= 0.98;
+  return current_brown;
 }
