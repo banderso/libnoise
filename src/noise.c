@@ -129,6 +129,7 @@ internal float random_uniform(void) {
   return (float)(arc4random_uniform(UINT16_MAX)) / (float)UINT16_MAX;
 }
 
+// http://www.dspguru.com/dsp/howtos/how-to-generate-white-gaussian-noise
 float gaussian(float mean, float variance) {
   const int kN = 20;
 
@@ -143,6 +144,7 @@ float gaussian(float mean, float variance) {
   return mean + sqrtf(variance) * x;
 }
 
+// https://code.google.com/p/fractalterraingeneration/wiki/Fractional_Brownian_Motion
 float brownian(float amplitude, float frequency) {
   local float current_brown;
   
